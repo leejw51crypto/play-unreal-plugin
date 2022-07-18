@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/82b
     paths-ignore:
       - README.md
     tags:
@@ -21,11 +22,15 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
 
+      - name: Prepare PlayCppSdk
+        run: |
+          make 
+
       - name: Package For Windows,Mac
         run: |
           FILENAME="CronosPlaySdk.zip"
           cd ..
-          zip -r ${FILENAME} play-unreal-plugin -x "play-unreal-plugin/.git/*"  "play-unreal-plugin/.github/*"
+          zip -r ${FILENAME} play-unreal-plugin -x "play-unreal-plugin/.git/*"  "play-unreal-plugin/.github/*" "play-unreal-plugin/install/*"
           mv ${FILENAME} play-unreal-plugin
           cd play-unreal-plugin
           sha256sum ${FILENAME} > "checksums.txt"
